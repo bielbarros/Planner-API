@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ParticipantService {
@@ -34,4 +35,12 @@ public class ParticipantService {
 
 
     public void triggerConfirmationEmailToParticipant(String email){};
+
+    public List<ParticipantData> getAllParticipantsFromEvent(UUID tripId) {
+        return this.repository.findByTripId(tripId)
+                .stream()  // Cria um fluxo a partir da lista de participantes
+                .map(participant -> new ParticipantData(participant.getId(), participant.getName(), participant.getEmail(), participant.getIsConfirmed()))  // Mapeia cada participante para um ParticipantData
+                .collect(Collectors.toList());  // Coleta os resultados em uma lista
+    }
+
 }
