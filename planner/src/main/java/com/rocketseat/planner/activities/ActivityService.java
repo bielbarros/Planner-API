@@ -1,8 +1,13 @@
 package com.rocketseat.planner.activities;
 
+import com.rocketseat.planner.participant.ParticipantData;
 import com.rocketseat.planner.trip.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ActivityService {
@@ -17,5 +22,12 @@ public class ActivityService {
 
         return new ActivityResponse(newActivity.getId());
 
+    }
+
+    public List<ActivityData> getAllActivitiesFromId(UUID tripId) {
+        return this.repository.findByTripId(tripId)
+                .stream()  // Cria um fluxo a partir da lista de participantes
+                .map(activity -> new ActivityData(activity.getId(), activity.getTitle(), activity.getOccursAt()))  // Mapeia cada participante para um ParticipantData
+                .collect(Collectors.toList());  // Coleta os resultados em uma lista
     }
 }
